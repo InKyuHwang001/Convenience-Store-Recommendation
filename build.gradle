@@ -31,11 +31,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
-bootJar{
+bootJar {
     archiveFileName = 'app.jar'
 }
 
-jar{
+jar {
     enabled = false
 }
 
