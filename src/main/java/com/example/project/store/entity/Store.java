@@ -1,30 +1,42 @@
 package com.example.project.store.entity;
 
+import com.example.project.BaseTimeEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.*;
 
 @Entity(name = "store")
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Store {
+@NoArgsConstructor(access = PROTECTED)
+public class Store extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     private String storeName;
+
+    @Column(name = "address")
     private String storeAddress;
+
     private double latitude;
+
     private double longitude;
 
 
+    @Builder
+    public Store(Long id, String storeName, String storeAddress, double latitude, double longitude) {
+        this.id = id;
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 
 }

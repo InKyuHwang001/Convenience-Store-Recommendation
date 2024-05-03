@@ -27,6 +27,7 @@ public class KakaoAddressSearchService {
 
     public ApiResponseDto requestAddressSearch(String address) {
 
+        //TODO: 예외처리
         if (ObjectUtils.isEmpty(address)) return null;
 
         URI uri = kaKaoUriBuilderService.buildUriByAddressSearch(address);
