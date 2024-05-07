@@ -1,4 +1,4 @@
-package com.example.project.controller.response;
+package com.example.project.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -39,4 +39,14 @@ class KakaoAddressSearchServiceTest {
 
     }
 
+    @Test
+    @DisplayName("")
+    void test (){
+        //given
+
+        //when
+
+        //then
+
+    }
 }
