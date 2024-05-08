@@ -1,7 +1,7 @@
-version: "3.8"                                          # 파일 규격 버전
-services:                                               # 이 항목 밑에 실행하려는 컨테이너들을 정의
-  convenience-store-recommendation-redis:                        # 서비스명
-    container_name: convenience-store-recommendation-redis       # 컨테이너 명
+version: "3.8"                                          # file version
+services:
+  convenience-store-recommendation-redis:                        # service name
+    container_name: convenience-store-recommendation-redis
     build:
       dockerfile: Dockerfile
       context: ./redis
@@ -19,13 +19,12 @@ services:                                               # 이 항목 밑에 실�
       - MARIADB_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     volumes:
       - ./database/config:/etc/mysql/conf.d
-      - ./database/init:/docker-entrypoint-initdb.d
     ports:
-      - "3306:3306"      # 접근 포트 설정 (컨테이너 외부:컨테이너 내부)
+      - "3306:3306"      # container outer : inner
   convenience-store-recommendation-app:
     container_name: convenience-store-recommendation-app
     build: .
-    depends_on:          # DB, REDIS 컨테이너가 실행된 다음 WEB을 실행시킨다.
+    depends_on:          # DB, REDIS 실행 후 WEB 실행
       - convenience-store-recommendation-database
       - convenience-store-recommendation-redis
     image: hwnaginkyu42/convenience-store-recommendation-app
@@ -36,6 +35,4 @@ services:                                               # 이 항목 밑에 실�
       - KAKAO_REST_API_KEY=${KAKAO_REST_API_KEY}
     ports:
       - "80:8080"
-    restart: always # depends on은 실행 순서만 컨트롤 할뿐,
-      # 컨테이너 안의 서비스가 실행가능한 상태인지까지는 확인 하지 않기 때문에
-    # DB 또는 Redis가 아직 실행가능한 상태가 아니여서 실패하는 경우 재시작 하도록 설정
+    restart: always
