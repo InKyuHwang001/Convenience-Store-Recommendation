@@ -5,13 +5,17 @@ import com.example.project.api.dto.DocumentDto;
 import com.example.project.api.service.KakaoAddressSearchService;
 import com.example.project.direction.entity.Direction;
 import com.example.project.direction.service.DirectionService;
+import com.example.project.store.dto.InputDto;
+import com.example.project.store.dto.OutputDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,18 +25,23 @@ public class StoreRecommendationService {
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
 
-    public void recommendationStoreList(String address){
+
+
+    public List<OutputDto> recommendationStoreList(InputDto request){
+        String address = request.getAddress();
         ApiResponseDto apiResponseDto = kakaoAddressSearchService.requestAddressSearch(address);
 
         if (Objects.isNull(apiResponseDto) || CollectionUtils.isEmpty(apiResponseDto.getDocumentList())) {
             log.error("[StoreRecommendationService.recommendationStoreList fail] Input address: {}", address);
-            return ;
+            return Collections.emptyList();
         }
 
         DocumentDto documentDto = apiResponseDto.getDocumentList().get(0);
 
         List<Direction> directions = directionService.buildDirectionList(documentDto);
 
-        directionService.saveAll(directions);
+        return directionService.saveAll(directions).stream()
+                .map(OutputDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }
