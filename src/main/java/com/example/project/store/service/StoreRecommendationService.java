@@ -4,11 +4,13 @@ import com.example.project.api.dto.ApiResponseDto;
 import com.example.project.api.dto.DocumentDto;
 import com.example.project.api.service.KakaoAddressSearchService;
 import com.example.project.direction.entity.Direction;
+import com.example.project.direction.service.Base62Service;
 import com.example.project.direction.service.DirectionService;
 import com.example.project.store.dto.InputDto;
 import com.example.project.store.dto.OutputDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -24,7 +26,10 @@ public class StoreRecommendationService {
 
     private final KakaoAddressSearchService kakaoAddressSearchService;
     private final DirectionService directionService;
+    private final Base62Service base62Service;
 
+    @Value("${store.recommendation.base.url}")
+    private String baseUrl;
 
 
     public List<OutputDto> recommendationStoreList(InputDto request){
@@ -41,7 +46,11 @@ public class StoreRecommendationService {
         List<Direction> directions = directionService.buildDirectionList(documentDto);
 
         return directionService.saveAll(directions).stream()
-                .map(OutputDto::fromEntity)
+                .map(entity -> {
+                    OutputDto outputDto = OutputDto.fromEntity(entity);
+                    outputDto.makeShortenDirectionUrl(baseUrl + base62Service.encodeDirectionId(entity.getId()));
+                    return outputDto;
+                })
                 .collect(Collectors.toList());
     }
 }

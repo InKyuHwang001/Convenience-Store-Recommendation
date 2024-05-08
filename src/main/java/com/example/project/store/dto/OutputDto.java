@@ -45,4 +45,7 @@ public class OutputDto {
                 .build();
     }
 
+    public void makeShortenDirectionUrl(String directionUrl) {
+        this.directionUrl = directionUrl;
+    }
 }

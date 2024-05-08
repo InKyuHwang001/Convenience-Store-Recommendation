@@ -27,6 +27,7 @@ public class DirectionService {
 
     private final DirectionRepository directionRepository;
     private final KaKaoCategorySearchService kaKaoCategorySearchService;
+    private final Base62Service base62Service;
 
     @Transactional
     public List<Direction> saveAll(List<Direction> directionList) {
@@ -34,6 +35,11 @@ public class DirectionService {
         if (CollectionUtils.isEmpty(directionList)) return Collections.emptyList();
 
         return directionRepository.saveAll(directionList);
+    }
+
+    public Direction findById(String encodedId){
+        Long decodeDirectionId = base62Service.decodeDirectionId(encodedId);
+        return directionRepository.findById(decodeDirectionId).orElse(null);
     }
 
     public List<Direction> buildDirectionList(DocumentDto inputDocumentDto) {
@@ -56,6 +62,7 @@ public class DirectionService {
                 .filter(direction -> direction.getDistance() <= RADIUS_KM)
                 .limit(MAX_SEARCH_COUNT)
                 .collect(Collectors.toList());
-
     }
+
+
 }
